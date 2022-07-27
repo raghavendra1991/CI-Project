@@ -19,7 +19,7 @@ pipeline {
                 sh 'pip install -r requirements.txt && pip install -e .'
             }
         }
-        stage ('Test') {
+        stage ('Test & SonarQube Analysis') {
 	    environment {
 		scannerHome = tool 'SonarQube Scanner'
 	    }
