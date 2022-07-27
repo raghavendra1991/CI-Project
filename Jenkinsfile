@@ -33,7 +33,7 @@ pipeline {
         }
         stage ('Archive artifacts') {
             steps {
-                archiveArtifacts artifacts: 'coverage/'
+                archiveArtifacts artifacts: 'htmlcov/'
             }
         }
         stage ('Publish Artifactory') {
