@@ -42,18 +42,17 @@ pipeline {
         }
         stage ('Publish Artifactory') {
 	    steps {
-		rtupload (
-		   serverId: admin
+		rtUpload (
+		   serverId: 'admin',
 		   spec: '''{
  			  "files" :[
-			          {
-		                    "pattern": "/htmlcov",
-		    	            "target": "pythonapp/",
-			            "recursive": "false"
-			          }
-		             ]
-			}'''
-	       	   }
+			    {
+		               "pattern": "/htmlcov",
+		               "target": "pythonapp/",
+	                       "recursive": "false"
+			    }
+		          ]
+		    }'''
 	        )
 	    }
         }
