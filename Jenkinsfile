@@ -4,12 +4,6 @@ pipeline {
         // This is required if you want to clean before build
         skipDefaultCheckout(true)
     }
-    environment {   
-        http_proxy = 'http://127.0.0.1:3128/'
-        https_proxy = 'http://127.0.0.1:3128/'
-        ftp_proxy = 'http://127.0.0.1:3128/'
-        socks_proxy = 'socks://127.0.0.1:3128/'     
-    }
     stages {
         stage ('Clean Up WorkSpace') {
             steps {
