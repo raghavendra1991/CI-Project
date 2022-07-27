@@ -39,7 +39,7 @@ pipeline {
         stage ('Publish Artifactory') {
             steps {
 		withCredentials([usernamePassword(credentialsId: 'artifactory', passwordVariable: 'passwd', usernameVariable: 'user')]) {
-    		   sh 'jf rt upload tcoverage/ python-app/'
+    		   sh 'jf rt upload htmlcov/ python-app/'
 		}
             }
 	}
