@@ -41,11 +41,21 @@ pipeline {
             }
         }
         stage ('Publish Artifactory') {
-            steps {
-		withCredentials([usernamePassword(credentialsId: 'artifactory', passwordVariable: 'passwd', usernameVariable: 'user')]) {
-    		   sh 'jf rt upload htmlcov/ python-app/'
-		}
-            }
-	}
+	    steps {
+		rtupload (
+		   serverId: admin
+		   spec: '''{
+ 			  "files" :[
+			          {
+		                    "pattern": "/htmlcov",
+		    	            "target": "pythonapp/",
+			            "recursive": "false"
+			          }
+		             ]
+			}'''
+	       	   }
+	        )
+	    }
+        }
     }
 }
