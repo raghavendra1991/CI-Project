@@ -7,21 +7,30 @@ pipeline {
         socks_proxy = 'socks://127.0.0.1:3128/'     
     }
     stages {
-        stage ('Git checkout') {
+        stage ('Clean Up WorkSpace') {
             steps {
                 // Clean before build
                 cleanWs()
-                git branch: 'master', credentialsId: 'github', url: 'https://github.com/gopi732/sample-ci-python.git'
+                // We need to explicitly checkout from SCM here
+                checkout scm
+                echo "Building ${env.JOB_NAME}..."
             }
         }
-        stage ('Install dependencies and application') {
+        stage ('Install dependencies') {
             steps {
                 sh 'pip install -r requirements.txt && pip install -e .'
             }
         }
         stage ('Test') {
+	    environment {
+		scannerHome = tool 'SonarQube Scanner'
+	    }
             steps {
-                sh 'python3 -m pytest'       
+                sh 'python3 -m pytest'
+		withSonarQubeEnv('admin') {
+		   sh '${scannerHome}/bin/sonar-scanner \
+		   -D sonar.projectKey=python-app'
+		}
             }
         }
         stage ('Archive artifacts') {
@@ -31,10 +40,10 @@ pipeline {
         }
         stage ('Publish Artifactory') {
             steps {
-				withCredentials([usernamePassword(credentialsId: 'artifactory', passwordVariable: 'passwd', usernameVariable: 'user')]) {
-    		        sh 'jf rt upload test-reports/ DevOps-CI/'
-				}
+		withCredentials([usernamePassword(credentialsId: 'artifactory', passwordVariable: 'passwd', usernameVariable: 'user')]) {
+    		   sh 'jf rt upload tcoverage/ python-app/'
+		}
             }
-	    }
+	}
     }
 }
