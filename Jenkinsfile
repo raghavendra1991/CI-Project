@@ -24,10 +24,14 @@ pipeline {
 		scannerHome = tool 'SonarQube Scanner'
 	    }
             steps {
+		echo "Unit Testing"
                 sh 'python3 -m pytest'
+		echo "Test Coverage"
+		sh 'python3 -m coverage xml -o htmlcov/coverage.xml'
 		withSonarQubeEnv('admin') {
 		   sh '${scannerHome}/bin/sonar-scanner \
-		   -D sonar.projectKey=python-app'
+		   -D sonar.projectKey=python-app \
+		   -D sonar.python.coverage.reportPaths=coverage.xml'	
 		}
             }
         }
