@@ -5,7 +5,7 @@ pipeline {
         skipDefaultCheckout(true)
     }
     stages {
-        stage ('Clean Up WorkSpace') {
+        stage('Build') {
             steps {
                 // Clean before build
                 cleanWs()
