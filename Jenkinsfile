@@ -43,7 +43,7 @@ pipeline {
         stage ('Publish Artifactory') {
 	    steps {
 		rtUpload (
-		   serverId: 'admin',
+		   serverId: 'JFrog',
 		   spec: '''{
  			  "files" :[
 			    {
