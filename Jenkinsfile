@@ -5,7 +5,7 @@ pipeline {
         skipDefaultCheckout(true)
     }
     stages {
-        stage('Build') {
+        stage('CleanUp WorkSpace') {
             steps {
                 // Clean before build
                 cleanWs()
@@ -41,11 +41,30 @@ pipeline {
             }
         }
         stage ('Publish Artifactory') {
-            steps {
-		withCredentials([usernamePassword(credentialsId: 'artifactory', passwordVariable: 'passwd', usernameVariable: 'user')]) {
-    		   sh 'jf rt upload htmlcov/ python-app/'
-		}
-            }
-	}
+	    steps {
+		rtUpload (
+		   serverId: 'JFrog',
+		   spec: '''{
+ 			  "files" :[
+			    {
+		               "pattern": "htmlcov/",
+		               "target": "python-app/",
+	                       "recursive": "false"
+			    }
+		          ]
+		    }'''
+	        )
+	    }
+        }
+    }
+    post {
+        // Clean after build
+        always {
+            cleanWs(cleanWhenNotBuilt: false,
+                    deleteDirs: true,
+                    disableDeferredWipeout: true,
+                    notFailBuild: true
+	    )
+        }
     }
 }
