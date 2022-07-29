@@ -5,7 +5,7 @@ pipeline {
         skipDefaultCheckout(true)
     }
     stages {
-        stage('Build') {
+        stage('CleanUp WorkSpace') {
             steps {
                 // Clean before build
                 cleanWs()
@@ -47,14 +47,24 @@ pipeline {
 		   spec: '''{
  			  "files" :[
 			    {
-		               "pattern": "/htmlcov",
-		               "target": "pythonapp/",
+		               "pattern": "htmlcov/",
+		               "target": "python-app/",
 	                       "recursive": "false"
 			    }
 		          ]
 		    }'''
 	        )
 	    }
+        }
+    }
+    post {
+        // Clean after build
+        always {
+            cleanWs(cleanWhenNotBuilt: false,
+                    deleteDirs: true,
+                    disableDeferredWipeout: true,
+                    notFailBuild: true
+	    )
         }
     }
 }
